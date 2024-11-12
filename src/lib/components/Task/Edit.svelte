@@ -23,6 +23,7 @@
 <div class="task" class:completed>
   <div class="toolbar">
     <button onclick={accept}>Accept</button>
+    <button onclick={remove}>Delete</button>
   </div>
 
   <textarea class="description" oninput={e => {updateDescription(e.target.value)}}>{description}</textarea>
