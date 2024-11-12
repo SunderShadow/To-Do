@@ -1,10 +1,19 @@
 <script lang="ts">
-  let {description, completed, remove, toggleComplete} = $props()
+  import type {MouseEventHandler} from "svelte/elements"
+
+  type Props = {
+      description: string,
+      completed: boolean,
+      remove: MouseEventHandler<any>,
+      toggleComplete: MouseEventHandler<any>
+  }
+
+  let {description, completed, remove, toggleComplete}: Props = $props()
 
 </script>
 <div class="task" class:completed>
-  <button on:click={toggleComplete}>complete</button>
-  <button on:click={remove}>delete</button>
+  <button onclick={toggleComplete}>complete</button>
+  <button onclick={remove}>delete</button>
   <span>{description}</span>
 </div>
 
