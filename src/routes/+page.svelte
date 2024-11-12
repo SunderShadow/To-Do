@@ -1,31 +1,30 @@
 <script lang="ts">
-  import TaskComponent from "$lib/components/Task.svelte"
   import {onMount} from "svelte"
+
+  import DefaultTask from "$lib/components/Task/Default.svelte"
+  import EditModeTask from "$lib/components/Task/Edit.svelte"
   import TaskTable from "$lib/components/Icons/TaskTable.svelte"
   import Plus from "$lib/components/Icons/Plus.svelte"
+  import type {Task} from '$lib'
 
-  type TaskType = {
-      description: string
-      completed: boolean,
-      difficult: 1 | 2 | 3 // 1 - Easy, 2 - Medium, 3 - Hard
-  }
 
   let inputTask = $state('')
-  let tasks: TaskType[] = $state([])
+  let tasks: Task[] = $state([])
 
   onMount(loadFromLocalStorage)
 
   function addTask() {
-      tasks.push({
-          description: inputTask,
+      tasks.unshift({
+          description: 'Any description here...',
           completed: false,
-          difficult: 3
+          difficult: 1,
+          mode: 'edit'
       })
 
       saveToLocalstorage()
   }
 
-  function removeTask(task: TaskType) {
+  function removeTask(task: Task) {
       let i = tasks.findIndex(el => el === task)
 
       if (tasks.length !== 0) {
@@ -39,40 +38,68 @@
       saveToLocalstorage()
   }
 
-  function toggleTaskComplete(task: TaskType) {
+  function updateTaskComplete(task: Task) {
       task.completed = !task.completed
       saveToLocalstorage()
   }
 
+  function updateDifficult(task: Task, difficult: 1 | 2 | 3) {
+      task.difficult = difficult
+      saveToLocalstorage()
+  }
+
+  function updateDescription(task: Task, description: string) {
+      task.description = description
+      saveToLocalstorage()
+  }
+
   function saveToLocalstorage() {
-      localStorage.setItem('tasks', JSON.stringify(tasks))
+      localStorage.setItem('tasks', JSON.stringify(tasks.map(i => ({
+          description: i.description,
+          completed: i.completed,
+          difficult: i.difficult
+      }))))
   }
 
   function loadFromLocalStorage() {
       let stringedTasks = localStorage.getItem('tasks')
 
-      console.log(stringedTasks)
       if (stringedTasks == null) {
           tasks = [
               {
                   description: "Easy task",
                   completed: false,
-                  difficult: 1
+                  difficult: 1,
+                  mode: 'default'
               },
               {
                   description: "Medium task",
                   completed: false,
-                  difficult: 2
+                  difficult: 2,
+                  mode: 'default'
               },
               {
                   description: "Hard task",
                   completed: false,
-                  difficult: 3
+                  difficult: 3,
+                  mode: 'default'
               }
           ]
       } else {
-          tasks = JSON.parse(stringedTasks)
+          tasks = JSON.parse(stringedTasks).map(i => ({...i, mode: 'default'}))
       }
+  }
+
+  function acceptTaskEdit(task: Task) {
+      task.mode = 'default'
+  }
+
+  function rejectTaskEdit(task: Task) {
+      task.mode = 'default'
+  }
+
+  function editMode(task: Task) {
+      task.mode = 'edit'
   }
 </script>
 
@@ -80,15 +107,24 @@
   <header>
     <span class="icon"><TaskTable/></span>
     <h1>To-Do</h1>
-    <button class="add-task"><Plus/></button>
+    <button onclick={addTask} class="add-task"><Plus/></button>
   </header>
   <div class="tasks">
     {#each tasks as task}
-      <TaskComponent
-              {...task}
-              remove={() => {removeTask(task)}}
-              toggleComplete={() => {toggleTaskComplete(task)}}
-      ></TaskComponent>
+      {#if task.mode === 'default'}
+        <DefaultTask
+                {...task}
+                editMode={() => {editMode(task)}}
+        ></DefaultTask>
+      {:else}
+        <EditModeTask
+                {...task}
+                accept={() => {acceptTaskEdit(task)}}
+                updateDescription={diff => {updateDescription(task, diff)}}
+                updateDifficult={diff => {updateDifficult(task, diff)}}
+                remove={() => {removeTask(task)}}
+        ></EditModeTask>
+      {/if}
     {/each}
   </div>
 </section>
