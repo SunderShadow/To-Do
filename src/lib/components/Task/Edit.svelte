@@ -33,9 +33,9 @@
     class:medium={difficult === 2}
     class:hard={difficult === 3}
   >
-    <div onclick={() => {updateDifficult(1)}}><Difficult /></div>
-    <div onclick={() => {updateDifficult(2)}}><Difficult /></div>
-    <div onclick={() => {updateDifficult(3)}}><Difficult /></div>
+    <button onclick={() => {updateDifficult(1)}}><Difficult /></button>
+    <button onclick={() => {updateDifficult(2)}}><Difficult /></button>
+    <button onclick={() => {updateDifficult(3)}}><Difficult /></button>
   </div>
 </div>
 
@@ -69,14 +69,17 @@
   .difficult > * {
     height: 100%;
     width: 30px;
+    border: none;
+    background: none;
+    padding: 0;
   }
 
-  .difficult.easy > div:first-child {
+  .difficult.easy > button:first-child {
     fill: var(--easy-color);
   }
 
-  .difficult.medium > div:nth-child(1),
-  .difficult.medium > div:nth-child(2) {
+  .difficult.medium > button:nth-child(1),
+  .difficult.medium > button:nth-child(2) {
     fill: var(--medium-color);
   }
 
@@ -90,14 +93,5 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-  }
-
-  .edit {
-    border: none;
-    background: none;
-    position: absolute;
-    top: 15px; right: 15px;
-
-    stroke: #000;
   }
 </style>
