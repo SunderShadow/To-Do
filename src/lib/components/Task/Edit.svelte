@@ -1,7 +1,6 @@
 <script lang="ts">
     import type {MouseEventHandler} from "svelte/elements"
     import Difficult from "$lib/components/Icons/Difficult.svelte"
-    import Pen from "$lib/components/Icons/Pen.svelte"
     import type {Task} from "$lib"
 
     type Props = Task & {
@@ -26,7 +25,7 @@
     <button onclick={remove}>Delete</button>
   </div>
 
-  <textarea class="description" oninput={e => {updateDescription(e.target.value)}}>{description}</textarea>
+  <textarea placeholder="Any description here..." class="description" oninput={e => {updateDescription(e.target.value)}}>{description}</textarea>
 
   <div
     class="difficult"

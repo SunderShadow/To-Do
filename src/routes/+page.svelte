@@ -15,7 +15,7 @@
 
   function addTask() {
       tasks.unshift({
-          description: 'Any description here...',
+          description: '',
           completed: false,
           difficult: 1,
           mode: 'edit'
